@@ -12,6 +12,9 @@
 using std::vector; using std::pair;
 using std::make_pair;
 
+extern vector<unsigned int> _logTable;
+extern vector<unsigned int> _expTable;
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	GF256init();
@@ -24,8 +27,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	assert((GF256elm(32) / GF256elm(16)) == GF256elm(2));
 	assert((GF256elm(15) / GF256elm(5)) == GF256elm(3));
 	assert((GF256elm(88) / GF256elm(8)) == GF256elm(11));
-	//assert((GF256elm(77) / GF256elm(11)) == GF256elm(7));
-	//assert((GF256elm(77) / GF256elm(7)) == GF256elm(11));
+	assert((GF256elm(7) * GF256elm(11)) == GF256elm(77));
+	assert((GF256elm(77) / GF256elm(11)) == GF256elm(7));
+	assert((GF256elm(77) / GF256elm(7)) == GF256elm(11));
 
 	PGF256 hi = generateRandomPolynomial(5, 0x08);
 	vector<pair<UINT, UINT>> lol = encodeByte(15, 5, 3);
