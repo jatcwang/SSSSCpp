@@ -61,7 +61,7 @@ UINT decodeByte(vector<pair<UINT, UINT>> keys) {
 		for (int j = 0; j < numKeys; ++j) {
 			if (i == j)
 				continue;
-			GF256elm nxj = GF256elm(-x[j]);
+			GF256elm nxj = GF256elm(x[j]);
 			GF256elm xi = GF256elm(x[i]);
 			GF256elm xj = GF256elm(x[j]);
 			GF256elm ximxj = xi - xj;
