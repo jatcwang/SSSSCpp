@@ -15,9 +15,10 @@ using std::vector; using std::pair;
 using std::make_pair;
 
 void testF() {
-	GF256elm a = GF256elm(17)*GF256elm(2)*GF256elm(3);
-	GF256elm b = (GF256elm(1) - GF256elm(2)) * (GF256elm(1) - GF256elm(3));
-	std::cout << (a/b).getVal() << std::endl;
+	GF256elm a = GF256elm(34) * GF256elm(3);
+	GF256elm b = (GF256elm(2) - GF256elm(1)) * (GF256elm(2) - GF256elm(3));
+	GF256elm c = a / b;
+	std::cout << c.getVal() << std::endl;
 }
 int _tmain(int argc, _TCHAR* argv[])
 {
