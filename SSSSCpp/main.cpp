@@ -20,9 +20,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	PGF256 hi = generateRandomPolynomial(5, 0x08);
 	vector<pair<UINT, UINT>> lol = encodeByte(15, 5, 3);
 	vector<pair<UINT, UINT>> lol2;
-	lol2.push_back(make_pair(225, 113));
-	lol2.push_back(make_pair(32, 247));
-	lol2.push_back(make_pair(249, 248));
+	lol2.push_back(make_pair(1, 17));
+	lol2.push_back(make_pair(2, 34));
+	lol2.push_back(make_pair(3, 61));
+	//lol2.push_back(make_pair(225, 113));
+	//lol2.push_back(make_pair(32, 247));
+	//lol2.push_back(make_pair(249, 248));
 	UINT result = decodeByte(lol2);
 	return 0;
 }
