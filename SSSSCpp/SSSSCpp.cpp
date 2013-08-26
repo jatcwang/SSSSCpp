@@ -55,10 +55,10 @@ UINT decodeByte(vector<pair<UINT, UINT>> keys) {
 	//(It's simplified because we don't need to know what the polynomial is,
 	//just the constant itself, which can be easily deduced.
 	GF256elm result(0);
-	for (int i = 0; i < numKeys; i++) {
+	for (int i = 0; i < numKeys; ++i) {
 		//calculate the constant term of lagrange interpolation polynomial
 		GF256elm l(1);
-		for (int j = 0; j < numKeys; j++) {
+		for (int j = 0; j < numKeys; ++j) {
 			if (i == j)
 				continue;
 			GF256elm nxj = GF256elm(-x[j]);
