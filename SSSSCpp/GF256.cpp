@@ -8,13 +8,7 @@ vector<unsigned int> _logTable(256, 0);
 vector<unsigned int> _expTable(256, 0);
 
 GF256elm::GF256elm(int x) {
-	int temp = x % 256;
-	if (temp >= 0) {
-		val = temp;
-	}
-	else {
-		val = temp + 256;
-	}
+	val = ((x % 256) + 256) % 256;
 }
 
 GF256elm& GF256elm::operator=(const GF256elm& other) {
