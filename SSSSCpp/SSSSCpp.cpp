@@ -4,7 +4,7 @@
 
 using std::vector; using std::pair;
 PGF256 generateRandomPolynomial(UINT degree, GF256elm secret) {
-	srand(time(NULL)); //initialise with time as seed
+	//srand(time(NULL)); //initialise with time as seed
 
 	vector<GF256elm> coeffs;
 	coeffs.push_back(secret);
