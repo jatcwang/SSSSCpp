@@ -1,18 +1,75 @@
-// SSSSCpp.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
-#include "GF256.h"
-
-#include <assert.h>
+#include "SSSSCpp.h"
 
 
-int _tmain(int argc, _TCHAR* argv[])
-{
-	GF256init();
-	assert(GF256elm(3) + GF256elm(4) == GF256elm(7));
-	assert(GF256elm(500) == GF256elm(244));
-	assert(GF256elm(3) *  GF256elm(4) == GF256elm(12));
-	return 0;
+using std::vector; using std::pair;
+PGF256 generateRandomPolynomial(UINT degree, GF256elm secret) {
+	srand(time(NULL)); //initialise with time as seed
+
+	vector<GF256elm> coeffs;
+	coeffs.push_back(secret);
+
+	for (UINT i = 1; i < degree; i++) {
+		coeffs.push_back(GF256elm(rand() % 256));
+	}
+
+	//pick a non random coefficient for the highest degree
+	coeffs.push_back(GF256elm(rand() % 256));
+	return PGF256(coeffs);
 }
 
+vector<pair<UINT, UINT>> encodeByte(UINT byte, int n, int k) {
+	vector<bool> picked(256, false); //initialise vector with all false
+
+	PGF256 poly = generateRandomPolynomial(k - 1, GF256elm(byte));
+	vector<pair<UINT, UINT>> result;
+
+	for (int i = 0; i < n; i++) {
+		UINT x;
+		do { //pick a random number thath hasn't been used before
+			x = rand() %255 + 1; //generate random number between 1 and 255 inclusive
+		}while (picked[x] == true);
+		picked[x] = true;
+
+		//calculate y from x using the random polynomial generated before
+		UINT y = poly.compute(GF256elm(x)).getVal();
+
+		//add this pair to the vector of pairs
+		result.push_back(std::make_pair(x, y));
+	}
+	return result;
+}
+
+UINT decodeByte(vector<pair<UINT, UINT>> keys) {
+	int numKeys = keys.size();
+	//extract the x's and y's from the vector
+	vector<int> x;
+	vector<int> y;
+	for (int i = 0; i < numKeys; i++) {
+		x.push_back(keys[i].first); //extract x
+		y.push_back(keys[i].second); //extract y
+	}
+
+	//now calculate the constant value (which is the secret) using
+	//a simplified equation of Lagrange's Interpolation technique
+	//(It's simplified because we don't need to know what the polynomial is,
+	//just the constant itself, which can be easily deduced.
+	GF256elm result(0);
+	for (int i = 0; i < numKeys; ++i) {
+		//calculate the constant term of lagrange interpolation polynomial
+		GF256elm l(1);
+		for (int j = 0; j < numKeys; ++j) {
+			if (i == j)
+				continue;
+			GF256elm nxj = GF256elm(x[j]);
+			GF256elm xi = GF256elm(x[i]);
+			GF256elm xj = GF256elm(x[j]);
+			GF256elm ximxj = xi - xj;
+			GF256elm prod = nxj / ximxj;
+			l *= prod;
+		}
+		GF256elm product = GF256elm(y[i]) * l;
+		result += product;
+	}
+	return result.getVal();
+}
