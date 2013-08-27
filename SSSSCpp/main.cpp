@@ -14,25 +14,15 @@
 using std::vector; using std::pair;
 using std::make_pair;
 
-void testF() {
-	GF256elm a = GF256elm(34) * GF256elm(3);
-	GF256elm b = (GF256elm(2) - GF256elm(1)) * (GF256elm(2) - GF256elm(3));
-	GF256elm c = a / b;
-	std::cout << c.getVal() << std::endl;
-}
 int _tmain(int argc, _TCHAR* argv[])
 {
 	GF256init();
-	testF();
 	PGF256 hi = generateRandomPolynomial(5, 0x08);
 	vector<pair<UINT, UINT>> lol = encodeByte(15, 5, 3);
 	vector<pair<UINT, UINT>> lol2;
-	lol2.push_back(make_pair(1, 17));
-	lol2.push_back(make_pair(2, 34));
-	lol2.push_back(make_pair(3, 61));
-	//lol2.push_back(make_pair(225, 113));
-	//lol2.push_back(make_pair(32, 247));
-	//lol2.push_back(make_pair(249, 248));
+	lol2.push_back(make_pair(1, 13));
+	lol2.push_back(make_pair(2, 26));
+	lol2.push_back(make_pair(3, 29));
 	UINT result = decodeByte(lol2);
 	return 0;
 }
