@@ -17,8 +17,7 @@ using std::make_pair;
 int _tmain(int argc, _TCHAR* argv[])
 {
 	GF256init();
-	vector<pair<UINT, UINT>> lol = encodeByte(15, 5, 3);
-	UINT result = decodeByte(lol); //result == 15
+	srand(clock());
 	return 0;
 }
 
