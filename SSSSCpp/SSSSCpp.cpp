@@ -8,15 +8,15 @@ using std::cout; using std::endl;
 using std::string; using std::ifstream;
 using std::ofstream; using std::ios;
 PGF256 generateRandomPolynomial(UINT degree, GF256elm secret) {
-	vector<GF256elm> coeffs;
-	coeffs.push_back(secret);
+	vector<GF256elm> coeffs(degree + 1);
+	coeffs[0] = secret;
 
 	for (UINT i = 1; i < degree; i++) {
-		coeffs.push_back(GF256elm(rand() % 256));
+		coeffs[i] = GF256elm(rand() % 256);
 	}
 
-	//pick a non random coefficient for the highest degree
-	coeffs.push_back(GF256elm(rand() % 256));
+	//pick a non zero coefficient for the highest degree
+	coeffs[degree] = GF256elm(rand() % 255 + 1);
 	return PGF256(coeffs);
 }
 

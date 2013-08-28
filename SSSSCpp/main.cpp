@@ -27,8 +27,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	int n = 5;
 	int k = 3;
 	string folder("../../test/");
-	string inputFileName("output.txt");
-	string reconstructFileName("myoutput.txt");
+	string inputFileName("input.jpg");
+	string reconstructFileName("output.jpg");
 	boost::filesystem::path inputFile(folder + inputFileName);
 	boost::filesystem::path outputPath(folder + reconstructFileName);
 	vector<boost::filesystem::path> shareFiles(n);
