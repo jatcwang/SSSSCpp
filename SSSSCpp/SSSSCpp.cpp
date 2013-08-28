@@ -195,12 +195,12 @@ void reconstructSecretFile(std::vector<boost::filesystem::path> pathToFiles,
 
 	//copies the data in each file shares into memory
 	int fileSize = (int) inputStreams[0].tellg(); //handles up to 2GB file size
-	char** reconMemBlock;
-	reconMemBlock = new char*[k];
+	char** inputMemBlock;
+	inputMemBlock = new char*[k];
 	for (int i = 0; i < k; ++i) {
-		reconMemBlock[i] = new char[fileSize];
+		inputMemBlock[i] = new char[fileSize];
 		inputStreams[i].seekg(0, ios::beg);
-		inputStreams[i].read(reconMemBlock[i], fileSize);
+		inputStreams[i].read(inputMemBlock[i], fileSize);
 		inputStreams[i].close();
 	}
 
@@ -214,7 +214,7 @@ void reconstructSecretFile(std::vector<boost::filesystem::path> pathToFiles,
 	for (int i = 0; i < fileSize; ++i) {
 		vector<UINT> reconYs(k);
 		for (int j = 0; j < k; ++j) {
-			reconYs[j] = reconMemBlock[j][i]; //read current byte
+			reconYs[j] = inputMemBlock[j][i]; //read current byte
 		}
 		UINT secretByte = decodeByte(xs, reconYs);
 		outputMemBlock[i] = secretByte;
@@ -226,8 +226,8 @@ void reconstructSecretFile(std::vector<boost::filesystem::path> pathToFiles,
 
 	//free memories
 	for (int i = 0; i < k; ++i) {
-		delete[] reconMemBlock[i];
+		delete[] inputMemBlock[i];
 	}
-	delete[] reconMemBlock;
+	delete[] inputMemBlock;
 	delete[] outputMemBlock;
 }
