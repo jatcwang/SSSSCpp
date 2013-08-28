@@ -7,17 +7,70 @@
 #include <vector>
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <time.h>
 
 #include <assert.h>
 #define UINT unsigned int
 
 using std::vector; using std::pair;
 using std::make_pair;
+using std::ifstream; using std::ofstream;
+using std::ios; using std::string;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	GF256init();
-	srand(clock());
+	srand(time(NULL));
+
+	int n = 5;
+	int k = 3;
+
+	string inFileName("../../test/output.txt");
+
+	vector<string> outFileNames(n);
+	for (int i = 0; i < n; ++i) {
+		std::stringstream ss;
+		ss << std::setw(3) << std::setfill('0') << i + 1;
+		outFileNames[i] = inFileName + "." + ss.str();
+	}
+
+	ifstream inFile;
+	vector<ofstream> outFiles(n);
+	inFile.open(inFileName, ios::binary | ios::ate);
+	if (!inFile.is_open()) {
+		throw;
+	}
+	for (int i = 0; i < n; ++i) {
+		outFiles[i].open(outFileNames[i], ios::binary);
+	}
+
+	//read the input file
+	char* memBlock;
+	int fileSize = (int) inFile.tellg(); //handles up to 2GB file size
+	memBlock = new char[fileSize];
+	inFile.seekg(0, ios::beg);
+	inFile.read(memBlock, fileSize);
+	inFile.close();
+
+	vector<UINT> xs(n, 0);
+	for (int i = 0; i < n; ++i) {
+		xs[i] = i + 1; // x points are 1 to n inclusive
+	}
+	for (int i = 0; i < fileSize; ++i) {
+		vector<pair<UINT, UINT>> points = encodeByte(memBlock[i], xs, k);
+		for (int j = 0; j < n; ++j) {
+			outFiles[j].write((const char*) &points[j].second, 1);
+		}
+	}
+
+	//close all opened files and free memory
+	delete[] memBlock;
+	for (int i = 0; i < n; ++i)
+		outFiles[i].close();
+
 	return 0;
 }
 
