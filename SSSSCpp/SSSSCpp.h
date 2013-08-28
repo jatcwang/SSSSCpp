@@ -13,5 +13,5 @@
 PGF256 generateRandomPolynomial(unsigned int degree, GF256elm secret);
 std::vector<std::pair<UINT, UINT>> encodeByte(UINT byte, int n, int k);
 UINT decodeByte(std::vector<std::pair<UINT, UINT>> keys);
-
+std::vector<std::pair<UINT, UINT>> encodeByte(UINT byte, std::vector<UINT> xs, int k);
 #endif
