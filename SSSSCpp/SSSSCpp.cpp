@@ -152,6 +152,7 @@ void splitSecretFile(boost::filesystem::path pathToFile, int n, int k) {
 		xs[i] = i + 1; // x points are 1 to n inclusive
 	}
 	for (int i = 0; i < fileSize; ++i) {
+		cout << (double)i/fileSize * 100 << endl;
 		vector<pair<UINT, UINT>> points = encodeByte(memBlock[i], xs, k);
 		for (int j = 0; j < n; ++j) {
 			outFiles[j].write((const char*) &points[j].second, 1);
