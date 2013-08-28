@@ -87,3 +87,32 @@ UINT decodeByte(vector<pair<UINT, UINT>> keys) {
 	}
 	return result.getVal();
 }
+
+UINT decodeByte(vector<UINT> xs, vector<UINT> ys) {
+	if (xs.size() != ys.size())
+		throw;
+	int numKeys = xs.size();
+
+	//now calculate the constant value (which is the secret) using
+	//a simplified equation of Lagrange's Interpolation technique
+	//(It's simplified because we don't need to know what the polynomial is,
+	//just the constant itself, which can be easily deduced.
+	GF256elm result(0);
+	for (int i = 0; i < numKeys; ++i) {
+		//calculate the constant term of lagrange interpolation polynomial
+		GF256elm l(1);
+		for (int j = 0; j < numKeys; ++j) {
+			if (i == j)
+				continue;
+			GF256elm nxj = GF256elm(xs[j]);
+			GF256elm xi = GF256elm(xs[i]);
+			GF256elm xj = GF256elm(xs[j]);
+			GF256elm ximxj = xi - xj;
+			GF256elm prod = nxj / ximxj;
+			l *= prod;
+		}
+		GF256elm product = GF256elm(ys[i]) * l;
+		result += product;
+	}
+	return result.getVal();
+}
