@@ -3,6 +3,7 @@
 
 
 using std::vector; using std::pair;
+using std::make_pair;
 PGF256 generateRandomPolynomial(UINT degree, GF256elm secret) {
 	vector<GF256elm> coeffs;
 	coeffs.push_back(secret);
@@ -34,6 +35,21 @@ vector<pair<UINT, UINT>> encodeByte(UINT byte, int n, int k) {
 
 		//add this pair to the vector of pairs
 		result.push_back(std::make_pair(x, y));
+	}
+	return result;
+}
+
+//encode byte using predefined x's
+vector<pair<UINT, UINT>> encodeByte(UINT byte, vector<UINT> xs, int k) {
+	//we're assuming xs contains no duplicates here thus not doing error check
+	PGF256 poly = generateRandomPolynomial(k - 1, GF256elm(byte));
+
+	vector<pair<UINT, UINT>> result;
+
+	//iterate through all xs and calculate the y values for each x
+	for (vector<UINT>::const_iterator it = xs.begin(); it != xs.end(); ++it) {
+		UINT y = poly.compute(GF256elm(*it)).getVal();
+		result.push_back(make_pair(*it, y));
 	}
 	return result;
 }
