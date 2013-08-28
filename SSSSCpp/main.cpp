@@ -20,17 +20,28 @@ using std::make_pair;
 using std::ifstream; using std::ofstream;
 using std::ios; using std::string;
 
+void split();
+void reconstruct();
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	GF256init();
 	srand(time(NULL));
 
-	int n = 5;
-	int k = 3;
+	split();
+	reconstruct();
 
-	string inFileName("../../test/output.txt");
 
-	vector<string> outFileNames(n);
+	return 0;
+}
+
+int n = 5;
+int k = 3;
+string inFileName("../../test/output.txt");
+vector<string> outFileNames(n);
+
+void split() {
+
 	for (int i = 0; i < n; ++i) {
 		std::stringstream ss;
 		ss << std::setw(3) << std::setfill('0') << i + 1;
@@ -70,22 +81,60 @@ int _tmain(int argc, _TCHAR* argv[])
 	delete[] memBlock;
 	for (int i = 0; i < n; ++i)
 		outFiles[i].close();
+}
 
+void reconstruct() {
 	//now open the output files and attempt to reconstructs
 	//take the first k files
 	string reconOutputFileName("../../test/myOutput.txt");
 	vector<string> reconInFileNames(outFileNames.begin(), outFileNames.begin() + k);
 	vector<ifstream> reconInFiles(k);
-	vector<UINT> reConXs;
-	vector<UINT> reConYs;
-	for (int i = 0; i < reconInFileNames.size(); ++i) {
+	vector<UINT> reconXs;
+
+	size_t numFiles = reconInFileNames.size();
+
+	for (int i = 0; i < numFiles; ++i) {
 		string hi = boost::filesystem::path(reconInFileNames[i]).extension().string();
 		string hi2 = hi.substr(1, hi.size() - 1);
 		UINT hi3 = (UINT)atoi(hi2.c_str());
-		reConXs.push_back(hi3);
-		reconInFiles[i].open(reconInFileNames[i]);
+		reconXs.push_back(hi3);
+		reconInFiles[i].open(reconInFileNames[i], ios::binary | ios::ate);
 	}
 
-	return 0;
-}
+	int reconFileSize = (int) reconInFiles[0].tellg();
+	char** reconMemBlock;
+	reconMemBlock = new char*[k];
+	for (int i = 0; i < numFiles; ++i) {
+		reconMemBlock[i] = new char[reconFileSize];
+		reconInFiles[i].seekg(0, ios::beg);
+		reconInFiles[i].read(reconMemBlock[i], reconFileSize);
+		reconInFiles[i].close();
+	}
 
+	//now decode and reconstruct the original file
+	ofstream reconOutputFile;
+	reconOutputFile.open(reconOutputFileName, ios::binary);
+	char* outputMemBlock = new char[reconFileSize];
+
+	//collect the bytes from each file and reconstruct 
+	//their original secret byte
+	for (int i = 0; i < reconFileSize; ++i) {
+		vector<UINT> reconYs(numFiles);
+		for (int j = 0; j < numFiles; ++j) {
+			reconYs[j] = reconMemBlock[j][i]; //read current byte
+		}
+		UINT secretByte = decodeByte(reconXs, reconYs);
+		outputMemBlock[i] = secretByte;
+	}
+	reconOutputFile.write(outputMemBlock, reconFileSize);
+
+	//close files
+	reconOutputFile.close();
+
+	//free memories
+	for (int i = 0; i < numFiles; ++i) {
+		delete[] reconMemBlock[i];
+	}
+	delete[] reconMemBlock;
+	delete[] outputMemBlock;
+}
