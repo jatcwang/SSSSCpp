@@ -55,7 +55,7 @@ vector<pair<UINT, UINT>> encodeByte(UINT byte, vector<UINT> xs, int k) {
 }
 
 UINT decodeByte(vector<pair<UINT, UINT>> keys) {
-	int numKeys = keys.size();
+	size_t numKeys = keys.size();
 	//extract the x's and y's from the vector
 	vector<int> x;
 	vector<int> y;
@@ -91,7 +91,7 @@ UINT decodeByte(vector<pair<UINT, UINT>> keys) {
 UINT decodeByte(vector<UINT> xs, vector<UINT> ys) {
 	if (xs.size() != ys.size())
 		throw;
-	int numKeys = xs.size();
+	size_t numKeys = xs.size();
 
 	//now calculate the constant value (which is the secret) using
 	//a simplified equation of Lagrange's Interpolation technique
