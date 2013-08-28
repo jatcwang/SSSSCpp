@@ -26,8 +26,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	srand(time(NULL));
 	int n = 5;
 	int k = 3;
-	boost::filesystem::path inputFile("../../test/output.txt");
-	boost::filesystem::path outputPath("../../test/myoutput.txt");
+	string folder("../../test/");
+	string inputFileName("output.txt");
+	string reconstructFileName("myoutput.txt");
+	boost::filesystem::path inputFile(folder + inputFileName);
+	boost::filesystem::path outputPath(folder + reconstructFileName);
 	vector<boost::filesystem::path> shareFiles(n);
 	for (int i = 0; i < n; ++i) {
 		std::stringstream ss;
