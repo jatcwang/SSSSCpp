@@ -1,6 +1,5 @@
 // SSSSCpp.cpp : Defines the entry point for the console application.
 //
-
 #include "stdafx.h"
 #include "GF256.h"
 #include "SSSSCpp.h"
@@ -11,6 +10,7 @@
 #include <sstream>
 #include <iomanip>
 #include <time.h>
+#include "boost/filesystem.hpp"
 
 #include <assert.h>
 #define UINT unsigned int
@@ -70,6 +70,21 @@ int _tmain(int argc, _TCHAR* argv[])
 	delete[] memBlock;
 	for (int i = 0; i < n; ++i)
 		outFiles[i].close();
+
+	//now open the output files and attempt to reconstructs
+	//take the first k files
+	string reconOutputFileName("../../test/myOutput.txt");
+	vector<string> reconInFileNames(outFileNames.begin(), outFileNames.begin() + k);
+	vector<ifstream> reconInFiles(k);
+	vector<UINT> reConXs;
+	vector<UINT> reConYs;
+	for (int i = 0; i < reconInFileNames.size(); ++i) {
+		string hi = boost::filesystem::path(reconInFileNames[i]).extension().string();
+		string hi2 = hi.substr(1, hi.size() - 1);
+		UINT hi3 = (UINT)atoi(hi2.c_str());
+		reConXs.push_back(hi3);
+		reconInFiles[i].open(reconInFileNames[i]);
+	}
 
 	return 0;
 }
