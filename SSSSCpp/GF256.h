@@ -12,6 +12,7 @@ class GF256elm{
 private:
 	unsigned int val;
 public:
+	GF256elm();
 	GF256elm(int x);
 	GF256elm& GF256elm::operator=(const GF256elm& other);
 	GF256elm& operator+=(const GF256elm& rhs);
