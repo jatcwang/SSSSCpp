@@ -46,13 +46,13 @@ vector<pair<UINT, UINT>> encodeByte(UINT byte, int n, int k) {
 vector<pair<UINT, UINT>> encodeByte(UINT byte, vector<UINT> xs, int k) {
 	//we're assuming xs contains no duplicates here thus not doing error check
 	PGF256 poly = generateRandomPolynomial(k - 1, GF256elm(byte));
-
-	vector<pair<UINT, UINT>> result;
+	size_t n = xs.size();
+	vector<pair<UINT, UINT>> result(n);
 
 	//iterate through all xs and calculate the y values for each x
-	for (vector<UINT>::const_iterator it = xs.begin(); it != xs.end(); ++it) {
-		UINT y = poly.compute(GF256elm(*it)).getVal();
-		result.push_back(make_pair(*it, y));
+	for (int i = 0; i < n; i++) {
+		UINT y = poly.compute(GF256elm(xs[i])).getVal();
+		result[i] = make_pair(xs[i], y);
 	}
 	return result;
 }
@@ -152,7 +152,7 @@ void splitSecretFile(boost::filesystem::path pathToFile, int n, int k) {
 		xs[i] = i + 1; // x points are 1 to n inclusive
 	}
 	for (int i = 0; i < fileSize; ++i) {
-		cout << (double)i/fileSize * 100 << endl;
+		//cout << (double)i/fileSize * 100 << endl;
 		vector<pair<UINT, UINT>> points = encodeByte(memBlock[i], xs, k);
 		for (int j = 0; j < n; ++j) {
 			outFiles[j].write((const char*) &points[j].second, 1);
