@@ -62,6 +62,9 @@ int main(int argc, char* argv[])
 			if (vm.count("split")) {
 				std::cout << "Splitting" << std::endl;
 				vector<string> const &splitInputs = vm["split"].as<vector<string>>();
+				if (splitInputs.size() != 3) {
+					throw po::error("Split usage: [Input File] [Total Share #] [Share # Required to Reconstruct]");
+				}
 				path inputPath(splitInputs[0]);
 				int n = atoi(splitInputs[1].c_str());
 				int k = atoi(splitInputs[2].c_str());
