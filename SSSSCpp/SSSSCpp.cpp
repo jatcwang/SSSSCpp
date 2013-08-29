@@ -171,7 +171,11 @@ void splitSecretFile(boost::filesystem::path pathToFile, int n, int k) {
 
 void reconstructSecretFile(std::vector<boost::filesystem::path> pathToFiles, 
 						   boost::filesystem::path outputPath) {
-
+	//check pathToFiles is not empty
+	if (pathToFiles.empty()) 
+		throw std::exception("No valid input file found");
+	if (outputPath.string() == "")
+		throw std::exception("No output file specified");
 	//split the file names into its stem and extension
 	//example.exe.001 will split into "example.exe" and ".001"
 	size_t k = pathToFiles.size();
