@@ -239,6 +239,8 @@ void reconstructSecretFile(std::vector<boost::filesystem::path> pathToFiles,
 void reconstructSecretFile(boost::filesystem::path pathToFile, boost::filesystem::path outputPath) {
 	namespace fs = boost::filesystem;
 	fs::path directory(pathToFile.parent_path());
+	if (directory.string() == "") //if input argument doesn't contain folder path, set it as current directory
+		directory = ".";
 	fs::directory_iterator endIterator;
 
 	vector<fs::path> inputPaths;
