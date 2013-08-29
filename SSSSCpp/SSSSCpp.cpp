@@ -43,7 +43,7 @@ vector<pair<UINT, UINT>> encodeByte(UINT byte, int n, int k) {
 }
 
 //encode byte using predefined x's
-vector<pair<UINT, UINT>> encodeByte(UINT byte, vector<UINT> xs, int k) {
+vector<pair<UINT, UINT>> encodeByte(UINT byte, vector<UINT>& xs, int k) {
 	//we're assuming xs contains no duplicates here thus not doing error check
 	PGF256 poly = generateRandomPolynomial(k - 1, GF256elm(byte));
 	size_t n = xs.size();
