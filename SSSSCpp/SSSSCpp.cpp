@@ -135,6 +135,9 @@ void splitSecretFile(boost::filesystem::path pathToFile, int n, int k) {
 	vector<ofstream> outFiles(n);
 
 	inFile.open(inFileName, ios::binary | ios::ate);
+	if (!inFile.is_open()) {
+		throw std::exception("Error in opening input file, please make sure the file exists and is not in use");
+	}
 	for (int i = 0; i < n; ++i) {
 		outFiles[i].open(outFileNames[i], ios::binary);
 	}
@@ -231,4 +234,40 @@ void reconstructSecretFile(std::vector<boost::filesystem::path> pathToFiles,
 	}
 	delete[] inputMemBlock;
 	delete[] outputMemBlock;
+}
+
+void reconstructSecretFile(boost::filesystem::path pathToFile, boost::filesystem::path outputPath) {
+	namespace fs = boost::filesystem;
+	fs::path directory(pathToFile.parent_path());
+	fs::directory_iterator endIterator;
+
+	vector<fs::path> inputPaths;
+	string inputFileName = pathToFile.filename().string();
+
+	for (fs::directory_iterator it(directory); it != endIterator; ++it) {
+		if (fs::is_regular_file(it->status())) { //is a file
+			fs::path currentFile = it->path();
+			
+			string fileName = currentFile.stem().string();
+			if (fileName != inputFileName)
+				continue;
+			
+			string extension = currentFile.extension().string();
+			if (extension.size() != 4) // extension is of the form ".001", so size must be 4
+				continue;
+
+			extension = extension.substr(1, 3); //get "001" from ".001"
+			try {
+				int i = boost::lexical_cast<int>(extension);
+				if (i < 1 || i > 255) //file number must be between 001 and 255 (inclusive)
+					continue;
+			}
+			catch (boost::bad_lexical_cast &e) {
+				continue;
+			}
+			//test passed, add this file to the list of input files
+			inputPaths.push_back(currentFile);
+		}
+	}
+	reconstructSecretFile(inputPaths, outputPath);
 }

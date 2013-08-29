@@ -12,6 +12,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include "boost/lexical_cast.hpp"
 
 #define UINT unsigned int
 
@@ -22,6 +23,8 @@ UINT decodeByte(std::vector<std::pair<UINT, UINT>> keys);
 UINT decodeByte(std::vector<UINT> xs, std::vector<UINT> ys);
 void splitSecretFile(boost::filesystem::path pathToFile, int n, int k);
 void reconstructSecretFile(std::vector<boost::filesystem::path> pathToFiles,
+						   boost::filesystem::path outputPath);
+void reconstructSecretFile(boost::filesystem::path pathToFile,
 						   boost::filesystem::path outputPath);
 
 
