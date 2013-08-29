@@ -7,6 +7,10 @@ using std::vector;
 vector<unsigned int> _logTable(256, 0);
 vector<unsigned int> _expTable(256, 0);
 
+GF256elm::GF256elm() {
+	val = 0;
+}
+
 GF256elm::GF256elm(int x) {
 	val = ((x % 256) + 256) % 256;
 }
