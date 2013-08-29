@@ -65,6 +65,12 @@ int main(int argc, char* argv[])
 				path inputPath(splitInputs[0]);
 				int n = atoi(splitInputs[1].c_str());
 				int k = atoi(splitInputs[2].c_str());
+				if (n <= 0 || k <= 0 || n > 255 || k > 255) {
+					throw std::exception("n and k must be between 1 and 255 (inclusive)");
+				}
+				if (n < k) {
+					throw std::exception("n must be larger or equal to k");
+				}
 				return SUCCESS;
 			}
 
