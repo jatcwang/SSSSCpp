@@ -135,6 +135,9 @@ void splitSecretFile(boost::filesystem::path pathToFile, int n, int k) {
 	vector<ofstream> outFiles(n);
 
 	inFile.open(inFileName, ios::binary | ios::ate);
+	if (!inFile.is_open()) {
+		throw std::exception("Error in opening input file, please make sure the file exists and is not in use");
+	}
 	for (int i = 0; i < n; ++i) {
 		outFiles[i].open(outFileNames[i], ios::binary);
 	}
