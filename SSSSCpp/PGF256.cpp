@@ -33,7 +33,7 @@ GF256elm PGF256::compute(GF256elm x) {
 	GF256elm xPower = GF256elm(1); //the term that calculates the power of x
 	for (unsigned int i = 1; i < coeffs.size(); i++) {
 		xPower *= x;
-		result += xPower * GF256elm(i); //add the current a(i) * x^i term to the result
+		result += xPower * GF256elm(coeffs[i]); //add the current a(i) * x^i term to the result
 	}
 	return result;
 }

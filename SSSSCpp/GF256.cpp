@@ -7,14 +7,12 @@ using std::vector;
 vector<unsigned int> _logTable(256, 0);
 vector<unsigned int> _expTable(256, 0);
 
-GF256elm::GF256elm(unsigned int x) {
-	int temp = x % 256;
-	if (temp >= 0) {
-		val = temp;
-	}
-	else {
-		val = temp + 256;
-	}
+GF256elm::GF256elm() {
+	val = 0;
+}
+
+GF256elm::GF256elm(int x) {
+	val = ((x % 256) + 256) % 256;
 }
 
 GF256elm& GF256elm::operator=(const GF256elm& other) {
@@ -33,20 +31,36 @@ GF256elm& GF256elm::operator-=(const GF256elm& other) {
 }
 
 GF256elm& GF256elm::operator*=(const GF256elm& other) {
+	if ((val == 0) || other.val == 0) {
+		val = 0;
+		return *this;
+	}
 	int temp = (_logTable[val] + _logTable[other.val]) % 255;
 	val = _expTable[temp];
 	return *this;
 }
 
 GF256elm& GF256elm::operator/=(const GF256elm& other) {
-	int temp = (_logTable[val] - _logTable[other.val]) % 255;
-	val = (temp >= 0)? _expTable[temp] : _expTable[temp + 255];
+	if (val == 0) {
+		val = 0;
+		return *this;
+	}
+	if (other.val == 0 ) {
+		throw; //divison by zero
+	}
+	int t = _logTable[val] - _logTable[other.val];
+	int temp =  ((t % 255) + 255) % 255;
+	val = _expTable[temp];
 	return *this;
 }
 
 bool GF256elm::operator==(const GF256elm& other) {
 	return (this->val == other.val)? true:false;
 } 
+
+UINT GF256elm::getVal() {
+	return val;
+}
 
 
 //Implement the binary operators. These are defined outside of the class according to guidelines. this allows us to write (for example)
