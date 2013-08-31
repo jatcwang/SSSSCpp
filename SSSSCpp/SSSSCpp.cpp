@@ -132,45 +132,59 @@ void splitSecretFile(boost::filesystem::path pathToFile, int n, int k) {
 	}
 
 	ifstream inFile;
+	char* memBlock = NULL;
 	vector<ofstream> outFiles(n);
 
-	inFile.open(inFileName, ios::binary | ios::ate);
-	if (!inFile.is_open()) {
-		throw std::exception("Error in opening input file, please make sure the file exists and is not in use");
-	}
-	for (int i = 0; i < n; ++i) {
-		outFiles[i].open(outFileNames[i], ios::binary);
-	}
-
-	//read the input file
-	char* memBlock;
-	int fileSize = (int) inFile.tellg(); //handles up to 2GB file size
-	memBlock = new char[fileSize];
-	inFile.seekg(0, ios::beg);
-	inFile.read(memBlock, fileSize);
-	inFile.close();
-
-	vector<UINT> xs(n);
-	for (int i = 0; i < n; ++i) {
-		xs[i] = i + 1; // x points are 1 to n inclusive
-	}
-	for (int i = 0; i < fileSize; ++i) {
-		//cout << (double)i/fileSize * 100 << endl;
-		vector<pair<UINT, UINT>> points = encodeByte(memBlock[i], xs, k);
-		for (int j = 0; j < n; ++j) {
-			outFiles[j].write((const char*) &points[j].second, 1);
+	try {
+		inFile.open(inFileName, ios::binary | ios::ate);
+		if (!inFile.is_open())
+			throw std::exception("Error in opening input file, please make sure the file exists and is not in use");
+		for (int i = 0; i < n; ++i) {
+			outFiles[i].open(outFileNames[i], ios::binary);
+			if (outFiles[i].is_open())
+				throw std::exception("One of the output files cannot be opened for writing");
 		}
+
+		//read the input file into memory and close it
+		int fileSize = (int) inFile.tellg(); //handles up to 2GB file size
+		memBlock = new char[fileSize];
+		inFile.seekg(0, ios::beg);
+		inFile.read(memBlock, fileSize);
+		inFile.close();
+
+		vector<UINT> xs(n);
+		for (int i = 0; i < n; ++i) {
+			xs[i] = i + 1; // x points are 1 to n inclusive
+		}
+		for (int i = 0; i < fileSize; ++i) {
+			//cout << (double)i/fileSize * 100 << endl;
+			vector<pair<UINT, UINT>> points = encodeByte(memBlock[i], xs, k);
+			for (int j = 0; j < n; ++j) {
+				outFiles[j].write((const char*) &points[j].second, 1);
+			}
+		}
+
+		//close all opened files and free memory
+		delete[] memBlock;
+		for (int i = 0; i < n; ++i)
+			outFiles[i].close();
 	}
-
-	//close all opened files and free memory
-	delete[] memBlock;
-	for (int i = 0; i < n; ++i)
-		outFiles[i].close();
-
+	catch (std::exception &e) { //close all files and free memory if exception happens
+		if (inFile.is_open()) {
+			inFile.close();
+		}
+		for (int i = 0; i < n; i++) {
+			if (outFiles[i].is_open()) {
+				outFiles[i].close();
+			}
+		}
+		if (memBlock != NULL) 
+			delete[] memBlock;
+		throw std::exception(e.what());
+	}
 }
 
-void reconstructSecretFile(std::vector<boost::filesystem::path> pathToFiles, 
-						   boost::filesystem::path outputPath) {
+void reconstructSecretFile(std::vector<boost::filesystem::path> pathToFiles, boost::filesystem::path outputPath) {
 	//check pathToFiles is not empty
 	if (pathToFiles.empty()) 
 		throw std::exception("No valid input file found");
@@ -187,9 +201,6 @@ void reconstructSecretFile(std::vector<boost::filesystem::path> pathToFiles,
 		fileNames[i] = pathToFiles[i].stem().string();
 		fileExtensions[i] = pathToFiles[i].extension().string();
 	}
-
-	//perform checks here
-	//TODO
 
 	vector<ifstream> inputStreams(k);
 	vector<UINT> xs; //vector of xs
@@ -253,11 +264,11 @@ void reconstructSecretFile(boost::filesystem::path pathToFile, boost::filesystem
 	for (fs::directory_iterator it(directory); it != endIterator; ++it) {
 		if (fs::is_regular_file(it->status())) { //is a file
 			fs::path currentFile = it->path();
-			
+
 			string fileName = currentFile.stem().string();
 			if (fileName != inputFileName)
 				continue;
-			
+
 			string extension = currentFile.extension().string();
 			if (extension.size() != 4) // extension is of the form ".001", so size must be 4
 				continue;
