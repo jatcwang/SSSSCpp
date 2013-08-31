@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
 			*/ 
 			if (vm.count("help")) 
 			{ 
-				std::cout << "Basic Command Line Parameter App" << std::endl 
+				std::cout << "Shamir's Secret Sharing Scheme for Files" << std::endl 
 					<< desc << std::endl; 
 				return SUCCESS; 
 			} 
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 				return SUCCESS;
 			}
 
-			if (vm.count("reconstruct")) {
+			else if (vm.count("reconstruct")) {
 				std::cout << "Reconstructing" << std::endl;
 				vector<string> const &reconInputs = vm["reconstruct"].as<vector<string>>();
 				if (reconInputs.size() != 2)
@@ -101,6 +101,12 @@ int main(int argc, char* argv[])
 				catch (std::exception &e) {
 					throw po::error(e.what());
 				}
+			}
+			else { 
+			//fail to parse input, output Usage
+			std::cout << "Shamir's Secret Sharing Scheme for Files" << std::endl 
+				<< desc << std::endl; 
+			return SUCCESS; 
 			}
 
 			po::notify(vm); // throws on error, so do after help in case there are any problems 
