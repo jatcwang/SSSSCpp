@@ -279,7 +279,7 @@ void reconstructSecretFile(boost::filesystem::path pathToFile, boost::filesystem
 				if (i < 1 || i > 255) //file number must be between 001 and 255 (inclusive)
 					continue;
 			}
-			catch (boost::bad_lexical_cast &e) {
+			catch (boost::bad_lexical_cast _) {
 				continue;
 			}
 			//test passed, add this file to the list of input files

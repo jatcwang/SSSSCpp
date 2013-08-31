@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 					}
 					splitSecretFile(inputPath, n, k);
 				}
-				catch (boost::bad_lexical_cast &e) {
+				catch (boost::bad_lexical_cast _) {
 					throw po::error("[Total Share Number] and [Share Number Required to Reconstruct] must be numbers");
 				}
 				catch (std::exception &e) {
