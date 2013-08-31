@@ -31,7 +31,7 @@ using boost::filesystem::path;
 int main(int argc, char* argv[])
 {
 	GF256init();
-	srand(time(NULL));
+	srand((unsigned)time(NULL));
 
 	try 
 	{ 
