@@ -13,9 +13,7 @@
 #include "boost/filesystem.hpp"
 #include "boost/program_options.hpp"
 #include "boost/lexical_cast.hpp"
-
-#include <assert.h>
-#define UINT unsigned int
+#include "SSSSCppTypes.h"
 
 namespace 
 { 
@@ -44,7 +42,7 @@ int main(int argc, char* argv[])
 			("split,s", po::value<vector<string>>()->multitoken(), "Split a file")
 			("reconstruct,r", po::value<vector<string>>()->multitoken(), "Reconstruct a file from its shares");
 		//("reconstruct,r", po::value<vector<string>>(&reconInputPaths), "Reconstruct a file from its shares");
-		//("options,o", "additional options") 
+		//("options,o", "additional options")
 
 		po::variables_map vm; 
 		try 
