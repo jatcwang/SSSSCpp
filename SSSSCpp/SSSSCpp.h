@@ -13,8 +13,7 @@
 #include <sstream>
 #include <iomanip>
 #include "boost/lexical_cast.hpp"
-
-#define UINT unsigned int
+#include "SSSSCppTypes.h"
 
 PGF256 generateRandomPolynomial(unsigned int degree, GF256elm secret);
 std::vector<std::pair<UINT, UINT>> encodeByte(UINT byte, int n, int k);

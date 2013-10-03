@@ -7,6 +7,7 @@ using std::make_pair;
 using std::cout; using std::endl;
 using std::string; using std::ifstream;
 using std::ofstream; using std::ios;
+
 PGF256 generateRandomPolynomial(UINT degree, GF256elm secret) {
 	vector<GF256elm> coeffs(degree + 1);
 	coeffs[0] = secret;

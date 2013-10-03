@@ -5,8 +5,7 @@
 #ifndef GF256_H
 #define GF256_H
 #include "stdafx.h"
-
-#define UINT unsigned int
+#include "SSSSCppTypes.h"
 
 class GF256elm{
 private:
